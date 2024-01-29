@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerar Áudio Automaticamente</title>
+</head>
+<body>
+
+    <audio autoplay controls id="audioPlayer" style="display: none;">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+
+    <script>
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        function gerarAudio() {
+            const textParam = getQueryParam('txt') || "PESSOAL GAY DA CALL"; // Default text if no parameter is provided
+            const url = 'https://api.elevenlabs.io/v1/text-to-speech/hdg2JKTnw5yL9JUg6aqT/stream';
+            const apiKey = '4038e6c7dbbe3b2ff38de15fac2429f4';
+            const data = {
+                text: textParam,
+                voice_settings: {
+                    similarity_boost: 1,
+                    stability: 1
+                },
+                model_id: "eleven_multilingual_v2"
+            };
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'xi-api-key': apiKey
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const audioUrl = URL.createObjectURL(blob);
+                const audioPlayer = document.getElementById('audioPlayer');
+                audioPlayer.src = audioUrl;
+                audioPlayer.style.display = 'block';
+            })
+            .catch(error => console.error('Erro:', error));
+        }
+
+        // Chama a função para gerar o áudio automaticamente quando a página é carregada
+        gerarAudio();
+    </script>
+</body>
+</html>
